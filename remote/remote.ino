@@ -67,6 +67,16 @@ void recvData() {
     }
 }
 
+int limit(int value, int min, int max, int minValue, int maxValue) {
+    if ( value < min ) {
+        return minValue;
+    } else if ( value > max ) {
+        return maxValue;
+    } else {
+        return value;
+    }
+}
+
 void loop() {
     recvData();
     unsigned long now = millis();
@@ -74,12 +84,12 @@ void loop() {
         ResetData();
     }
 
-    ch_width_1 = map(data.throttle, 0, 255, 1000, 2000);
-    ch_width_2 = map(data.pitch,    0, 255, 1000, 2000);
-    ch_width_3 = map(data.roll,     0, 255, 1000, 2000);
-    ch_width_4 = map(data.yaw,      0, 255, 1000, 2000);
-    ch_width_5 = map(data.rotateL,  0, 255, 1000, 2000);
-    ch_width_6 = map(data.rotateR,  0, 255, 1000, 2000);    
+    ch_width_1 = limit(map(data.throttle, 0, 255, -10, 10) + ch_width_1, -10, 10, 1000, 2000);
+    ch_width_2 = limit(map(data.pitch, 0, 255, -10, 10) + ch_width_2, -10, 10, 1000, 2000);
+    ch_width_3 = limit(map(data.roll, 0, 255, -10, 10) + ch_width_3, -10, 10, 1000, 2000);
+    ch_width_4 = limit(map(data.yaw, 0, 255, -10, 10) + ch_width_4, -10, 10, 1000, 2000);
+    ch_width_5 = limit(map(data.rotateL, 0, 255, -10, 10) + ch_width_5, -10, 10, 1000, 2000);
+    ch_width_6 = limit(map(data.rotateR, 0, 255, -10, 10) + ch_width_6, -10, 10, 1000, 2000);
 
     ch1.writeMicroseconds(ch_width_1);
     ch2.writeMicroseconds(ch_width_2);
