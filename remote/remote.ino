@@ -1,5 +1,5 @@
-//  6 Channel Receiver | 6 Kanal Alıcı
-//  output on pins D2, D3, D4, D5 , D6, D9 (Çıkış pinleri)
+// 6 Channel Receiver
+// output on pins D2, D3, D4, D5 , D6, D9
 
 #include <SPI.h>
 #include <nRF24L01.h>
@@ -54,7 +54,9 @@ void setup() {
     ResetData();
     radio.begin();
     radio.openReadingPipe(1,pipeIn);
-    
+
+    Serial.begin(115200);
+
     radio.startListening();
 }
 
@@ -84,12 +86,41 @@ void loop() {
         ResetData();
     }
 
+    Serial.print('RecieveTime: ');
+    Serial.print(now - lastRecvTime);
+
+    Serial.print(' Throttle: ');
+    Serial.print(data.throttle);
+    Serial.print(' Pitch: ');
+    Serial.print(data.pitch);
+    Serial.print(' Roll: ');
+    Serial.print(data.roll);
+    Serial.print(' Yaw: ');
+    Serial.print(data.yaw);
+    Serial.print(' RotateL: ');
+    Serial.print(data.rotateL);
+    Serial.print(' RotateR: ');
+    Serial.print(data.rotateR);
+
     ch_width_1 = limit(map(data.throttle, 0, 255, -10, 10) + ch_width_1, -10, 10, 1000, 2000);
     ch_width_2 = limit(map(data.pitch, 0, 255, -10, 10) + ch_width_2, -10, 10, 1000, 2000);
     ch_width_3 = limit(map(data.roll, 0, 255, -10, 10) + ch_width_3, -10, 10, 1000, 2000);
     ch_width_4 = limit(map(data.yaw, 0, 255, -10, 10) + ch_width_4, -10, 10, 1000, 2000);
     ch_width_5 = limit(map(data.rotateL, 0, 255, -10, 10) + ch_width_5, -10, 10, 1000, 2000);
     ch_width_6 = limit(map(data.rotateR, 0, 255, -10, 10) + ch_width_6, -10, 10, 1000, 2000);
+
+    Serial.print(' ch_width_1: ');
+    Serial.print(ch_width_1);
+    Serial.print(' ch_width_2: ');
+    Serial.print(ch_width_2);
+    Serial.print(' ch_width_3: ');
+    Serial.print(ch_width_3);
+    Serial.print(' ch_width_4: ');
+    Serial.print(ch_width_4);
+    Serial.print(' ch_width_5: ');
+    Serial.print(ch_width_5);
+    Serial.print(' ch_width_6: ');
+    Serial.println(ch_width_6);
 
     ch1.writeMicroseconds(ch_width_1);
     ch2.writeMicroseconds(ch_width_2);

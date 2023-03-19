@@ -1,4 +1,4 @@
-// 6 Channel Transmitter | 6 Kanal Verici
+// 6 Channel controller
 // input on pins A0, A1, A2, A3, A4, A5
 
 #include <SPI.h>
@@ -33,6 +33,8 @@ void setup() {
     radio.openWritingPipe(pipeOut);
     radio.stopListening();
     ResetData();
+
+    Serial.begin(115200);
 }
 
 int mapJoystickValues(int val, int lower, int middle, int upper, bool reverse) {
@@ -51,6 +53,19 @@ void loop() {
     data.yaw = mapJoystickValues( analogRead(A3), 12, 524, 1020, true );
     data.rotateL = mapJoystickValues( analogRead(A4), 12, 524, 1020, true );
     data.rotateR = mapJoystickValues( analogRead(A5), 12, 524, 1020, true );
+
+    Serial.print("Throttle: ");
+    Serial.print(data.throttle);
+    Serial.print(" Pitch: ");
+    Serial.print(data.pitch);
+    Serial.print(" Roll: ");
+    Serial.print(data.roll);
+    Serial.print(" Yaw: ");
+    Serial.print(data.yaw);
+    Serial.print(" RotateL: ");
+    Serial.print(data.rotateL);
+    Serial.print(" RotateR: ");
+    Serial.println(data.rotateR);
 
     radio.write(&data, sizeof(Signal));
 }
