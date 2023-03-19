@@ -1,4 +1,5 @@
 // 6 Channel Transmitter | 6 Kanal Verici
+// input on pins A0, A1, A2, A3, A4, A5
 
 #include <SPI.h>
 #include <nRF24L01.h>

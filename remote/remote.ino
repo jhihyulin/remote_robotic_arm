@@ -1,5 +1,5 @@
 //  6 Channel Receiver | 6 Kanal Alıcı
-//  PWM output on pins D2, D3, D4, D5 , D6, D9 (Çıkış pinleri)
+//  output on pins D2, D3, D4, D5 , D6, D9 (Çıkış pinleri)
 
 #include <SPI.h>
 #include <nRF24L01.h>
