@@ -13,8 +13,6 @@ struct Signal {
     byte rotateR;
 };
 
-
-
 int ch_width_1 = 0;
 int ch_width_2 = 0;
 int ch_width_3 = 0;
