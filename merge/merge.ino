@@ -97,7 +97,7 @@ void loop() {
     Serial.print(" Roll: ");
     Serial.print(data.roll);
     Serial.print(" Yaw: ");
-    Serial.println(data.yaw);
+    Serial.print(data.yaw);
     Serial.print(" RotateL: ");
     Serial.print(data.rotateL);
     Serial.print(" RotateR: ");
