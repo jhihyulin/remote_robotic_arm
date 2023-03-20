@@ -12,6 +12,7 @@ A simple remote-controlled robotic arm controlled by a joystick and servo motors
 | nRF24L01 | 2 | |
 | SG90 Servo Motor | 6 | or any other servo motor
 | Joystick | 2 | |
+| 10k Ohm Resistor | 2 | pull-up resistor for joystick button |
 | 10k Ohm Potentiometer | 2 | |
 | Type C socket | 2 | if your nano not Type-C interface |
 | 100uF Capacitor | 2 | > 6.3V |

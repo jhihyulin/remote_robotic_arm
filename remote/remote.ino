@@ -1,5 +1,5 @@
 // 6 Channel Receiver
-// output on pins D2, D3, D4, D5 , D6, D9
+// output on pins D2, D3, D4, D5 , D6, D9, D14, D15
 
 #include <SPI.h>
 #include <nRF24L01.h>
@@ -27,6 +27,8 @@ struct Signal {
     byte yaw;
     byte rotateL;
     byte rotateR;
+    byte switchL;
+    byte switchR;
 };
 
 Signal data;
@@ -41,6 +43,8 @@ void ResetData() {
     data.yaw = 127;
     data.rotateL = 127;
     data.rotateR = 127;
+    data.switchL = false;
+    data.switchR = false;
 }
 
 void setup() {
@@ -50,6 +54,9 @@ void setup() {
     ch4.attach(5);
     ch5.attach(6);
     ch6.attach(9);
+
+    pinMode(14, OUTPUT);
+    pinMode(15, OUTPUT);
 
     ResetData();
     radio.begin();
@@ -86,8 +93,8 @@ void loop() {
         ResetData();
     }
 
-    Serial.print('RecieveTime: ');
-    Serial.print(now - lastRecvTime);
+    // Serial.print('RecieveTime: ');
+    // Serial.print(now - lastRecvTime);
 
     Serial.print(' Throttle: ');
     Serial.print(data.throttle);
@@ -101,6 +108,10 @@ void loop() {
     Serial.print(data.rotateL);
     Serial.print(' RotateR: ');
     Serial.print(data.rotateR);
+    Serial.print(' SwitchL: ');
+    Serial.print(data.switchL);
+    Serial.print(' SwitchR: ');
+    Serial.println(data.switchR);
 
     ch_width_1 = limit(map(data.throttle, 0, 255, -10, 10) + ch_width_1, -10, 10, 1000, 2000);
     ch_width_2 = limit(map(data.pitch, 0, 255, -10, 10) + ch_width_2, -10, 10, 1000, 2000);
@@ -128,4 +139,7 @@ void loop() {
     ch4.writeMicroseconds(ch_width_4);
     ch5.writeMicroseconds(ch_width_5);
     ch6.writeMicroseconds(ch_width_6);
+
+    digitalWrite(14, data.switchL);
+    digitalWrite(15, data.switchR);
 }

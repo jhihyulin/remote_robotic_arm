@@ -1,5 +1,5 @@
 // 6 Channel controller
-// input on pins A0, A1, A2, A3, A4, A5
+// input on pins A0, A1, A2, A3, A4, A5, D2, D3
 
 #include <SPI.h>
 #include <nRF24L01.h>
@@ -15,6 +15,8 @@ struct Signal {
     byte yaw;
     byte rotateL;
     byte rotateR;
+    byte switchL;
+    byte switchR;
 };
 
 Signal data;
@@ -26,6 +28,8 @@ void ResetData() {
     data.yaw = 127;
     data.rotateL = 127;
     data.rotateR = 127;
+    data.switchL = 0;
+    data.switchR = 0;
 }
 
 void setup() {
@@ -53,6 +57,8 @@ void loop() {
     data.yaw = mapJoystickValues( analogRead(A3), 12, 524, 1020, true );
     data.rotateL = mapJoystickValues( analogRead(A4), 12, 524, 1020, true );
     data.rotateR = mapJoystickValues( analogRead(A5), 12, 524, 1020, true );
+    data.switchL = !digitalRead(2);
+    data.switchR = !digitalRead(3);
 
     Serial.print("Throttle: ");
     Serial.print(data.throttle);
@@ -65,7 +71,11 @@ void loop() {
     Serial.print(" RotateL: ");
     Serial.print(data.rotateL);
     Serial.print(" RotateR: ");
-    Serial.println(data.rotateR);
+    Serial.print(data.rotateR);
+    Serial.print(" SwitchL: ");
+    Serial.print(data.switchL);
+    Serial.print(" SwitchR: ");
+    Serial.println(data.switchR);
 
     radio.write(&data, sizeof(Signal));
 }
