@@ -1,4 +1,4 @@
-// 6 Channel Receiver
+// 8 Channel Receiver
 // output on pins D2, D3, D4, D5 , D6, D9, D14, D15
 
 #include <SPI.h>
@@ -7,9 +7,7 @@
 #include <Servo.h>
 
 float ch_width_1, ch_width_2, ch_width_3, ch_width_4, ch_width_5, ch_width_6 = 1500;
-
 Servo ch1, ch2, ch3, ch4, ch5, ch6;
-
 int throttle, pitch, roll, yaw, rotateL, rotateR;
 bool switchL, switchR;
 

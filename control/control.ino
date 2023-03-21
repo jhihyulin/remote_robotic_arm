@@ -1,4 +1,4 @@
-// 6 Channel controller
+// 8 Channel controller
 // input on pins A0, A1, A2, A3, A4, A5, D2, D3
 
 #include <SPI.h>
