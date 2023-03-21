@@ -6,45 +6,20 @@
 #include <RF24.h>
 #include <Servo.h>
 
-int ch_width_1 = 0;
-int ch_width_2 = 0;
-int ch_width_3 = 0;
-int ch_width_4 = 0;
-int ch_width_5 = 0;
-int ch_width_6 = 0;
+float ch_width_1, ch_width_2, ch_width_3, ch_width_4, ch_width_5, ch_width_6 = 1500;
 
-Servo ch1;
-Servo ch2;
-Servo ch3;
-Servo ch4;
-Servo ch5;
-Servo ch6;
+Servo ch1, ch2, ch3, ch4, ch5, ch6;
 
-struct Signal {
-    byte throttle;      
-    byte pitch;
-    byte roll;
-    byte yaw;
-    byte rotateL;
-    byte rotateR;
-    byte switchL;
-    byte switchR;
-};
-
-Signal data;
+int throttle, pitch, roll, yaw, rotateL, rotateR;
+bool switchL, switchR;
 
 const uint64_t pipeIn = 0xE9E8F0F0E1LL;
 RF24 radio(7, 8); 
 
 void ResetData() {
-    data.throttle = 127;
-    data.pitch = 127;
-    data.roll = 127;
-    data.yaw = 127;
-    data.rotateL = 127;
-    data.rotateR = 127;
-    data.switchL = false;
-    data.switchR = false;
+    ch_width_1, ch_width_2, ch_width_3, ch_width_4, ch_width_5, ch_width_6 = 1500;
+    throttle, pitch, roll, yaw, rotateL, rotateR = 127;
+    switchL, switchR = false;
 }
 
 void setup() {
@@ -71,16 +46,29 @@ unsigned long lastRecvTime = 0;
 
 void recvData() {
     while ( radio.available() ) {
-        radio.read(&data, sizeof(Signal));
+        // radio.read(&data, sizeof(Signal));
+        int data[8];
+        radio.read(&data, sizeof(data));
+        Serial.print(data[0]);
+        throttle = data[0];
+        pitch = data[1];
+        roll = data[2];
+        yaw = data[3];
+        rotateL = data[4];
+        rotateR = data[5];
+        switchL = data[6];
+        switchR = data[7];
+
         lastRecvTime = millis();
+        Serial.println('Recieved Data');
     }
 }
 
-int limit(int value, int min, int max, int minValue, int maxValue) {
+int limit(int value, int min, int max) {
     if ( value < min ) {
-        return minValue;
+        return min;
     } else if ( value > max ) {
-        return maxValue;
+        return max;
     } else {
         return value;
     }
@@ -90,48 +78,15 @@ void loop() {
     recvData();
     unsigned long now = millis();
     if ( now - lastRecvTime > 1000 ) {
-        ResetData();
+        Serial.println("Lost connection");
     }
 
-    // Serial.print('RecieveTime: ');
-    // Serial.print(now - lastRecvTime);
-
-    Serial.print(' Throttle: ');
-    Serial.print(data.throttle);
-    Serial.print(' Pitch: ');
-    Serial.print(data.pitch);
-    Serial.print(' Roll: ');
-    Serial.print(data.roll);
-    Serial.print(' Yaw: ');
-    Serial.print(data.yaw);
-    Serial.print(' RotateL: ');
-    Serial.print(data.rotateL);
-    Serial.print(' RotateR: ');
-    Serial.print(data.rotateR);
-    Serial.print(' SwitchL: ');
-    Serial.print(data.switchL);
-    Serial.print(' SwitchR: ');
-    Serial.println(data.switchR);
-
-    ch_width_1 = limit(map(data.throttle, 0, 255, -10, 10) + ch_width_1, -10, 10, 1000, 2000);
-    ch_width_2 = limit(map(data.pitch, 0, 255, -10, 10) + ch_width_2, -10, 10, 1000, 2000);
-    ch_width_3 = limit(map(data.roll, 0, 255, -10, 10) + ch_width_3, -10, 10, 1000, 2000);
-    ch_width_4 = limit(map(data.yaw, 0, 255, -10, 10) + ch_width_4, -10, 10, 1000, 2000);
-    ch_width_5 = limit(map(data.rotateL, 0, 255, -10, 10) + ch_width_5, -10, 10, 1000, 2000);
-    ch_width_6 = limit(map(data.rotateR, 0, 255, -10, 10) + ch_width_6, -10, 10, 1000, 2000);
-
-    Serial.print(' ch_width_1: ');
-    Serial.print(ch_width_1);
-    Serial.print(' ch_width_2: ');
-    Serial.print(ch_width_2);
-    Serial.print(' ch_width_3: ');
-    Serial.print(ch_width_3);
-    Serial.print(' ch_width_4: ');
-    Serial.print(ch_width_4);
-    Serial.print(' ch_width_5: ');
-    Serial.print(ch_width_5);
-    Serial.print(' ch_width_6: ');
-    Serial.println(ch_width_6);
+    ch_width_1 = limit(map(throttle, 0, 255, -1, 1) + ch_width_1, 1000, 2000);
+    ch_width_2 = limit(map(pitch, 0, 255, -1, 1) + ch_width_2, 1000, 2000);
+    ch_width_3 = limit(map(roll, 0, 255, -1, 1) + ch_width_3, 1000, 2000);
+    ch_width_4 = limit(map(yaw, 0, 255, -1, 1) + ch_width_4, 1000, 2000);
+    ch_width_5 = map(rotateL, 0, 255, 1000, 2000);
+    ch_width_6 = map(rotateR, 0, 255, 1000, 2000);
 
     ch1.writeMicroseconds(ch_width_1);
     ch2.writeMicroseconds(ch_width_2);
@@ -140,6 +95,6 @@ void loop() {
     ch5.writeMicroseconds(ch_width_5);
     ch6.writeMicroseconds(ch_width_6);
 
-    digitalWrite(14, data.switchL);
-    digitalWrite(15, data.switchR);
+    digitalWrite(14, switchL);
+    digitalWrite(15, switchR);
 }

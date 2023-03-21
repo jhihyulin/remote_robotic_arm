@@ -8,28 +8,12 @@
 const uint64_t pipeOut = 0xE9E8F0F0E1LL;
 RF24 radio(7, 8);
 
-struct Signal {
-    byte throttle;
-    byte pitch;
-    byte roll;
-    byte yaw;
-    byte rotateL;
-    byte rotateR;
-    byte switchL;
-    byte switchR;
-};
-
-Signal data;
+int throttle, pitch, roll, yaw, rotateL, rotateR;
+bool switchL, switchR;
 
 void ResetData() {
-    data.throttle = 127;
-    data.pitch = 127;
-    data.roll = 127;
-    data.yaw = 127;
-    data.rotateL = 127;
-    data.rotateR = 127;
-    data.switchL = 0;
-    data.switchR = 0;
+    throttle, pitch, roll, yaw, rotateL, rotateR = 127;
+    switchL, switchR = false;
 }
 
 void setup() {
@@ -51,31 +35,32 @@ int mapJoystickValues(int val, int lower, int middle, int upper, bool reverse) {
 }
 
 void loop() {
-    data.throttle = mapJoystickValues( analogRead(A0), 524, 524, 1015, true );
-    data.roll = mapJoystickValues( analogRead(A1), 12, 524, 1020, true );
-    data.pitch = mapJoystickValues( analogRead(A2), 12, 524, 1020, true );
-    data.yaw = mapJoystickValues( analogRead(A3), 12, 524, 1020, true );
-    data.rotateL = mapJoystickValues( analogRead(A4), 12, 524, 1020, true );
-    data.rotateR = mapJoystickValues( analogRead(A5), 12, 524, 1020, true );
-    data.switchL = !digitalRead(2);
-    data.switchR = !digitalRead(3);
+    throttle = mapJoystickValues( analogRead(A0), 524, 524, 1015, true );
+    roll = mapJoystickValues( analogRead(A1), 12, 524, 1020, true );
+    pitch = mapJoystickValues( analogRead(A2), 12, 524, 1020, true );
+    yaw = mapJoystickValues( analogRead(A3), 12, 524, 1020, true );
+    rotateL = mapJoystickValues( analogRead(A4), 12, 524, 1020, true );
+    rotateR = mapJoystickValues( analogRead(A5), 12, 524, 1020, true );
+    switchL = !digitalRead(2);
+    switchR = !digitalRead(3);
 
     Serial.print("Throttle: ");
-    Serial.print(data.throttle);
+    Serial.print(throttle);
     Serial.print(" Pitch: ");
-    Serial.print(data.pitch);
+    Serial.print(pitch);
     Serial.print(" Roll: ");
-    Serial.print(data.roll);
+    Serial.print(roll);
     Serial.print(" Yaw: ");
-    Serial.print(data.yaw);
+    Serial.print(yaw);
     Serial.print(" RotateL: ");
-    Serial.print(data.rotateL);
+    Serial.print(rotateL);
     Serial.print(" RotateR: ");
-    Serial.print(data.rotateR);
+    Serial.print(rotateR);
     Serial.print(" SwitchL: ");
-    Serial.print(data.switchL);
+    Serial.print(switchL);
     Serial.print(" SwitchR: ");
-    Serial.println(data.switchR);
+    Serial.println(switchR);
 
-    radio.write(&data, sizeof(Signal));
+    int data[8] = {throttle, pitch, roll, yaw, rotateL, rotateR, switchL, switchR};
+    radio.write(&data, sizeof(data));
 }
