@@ -6,7 +6,7 @@
 #include <RF24.h>
 #include <Servo.h>
 
-float ch_width_1, ch_width_2, ch_width_3, ch_width_4, ch_width_5, ch_width_6 = 1500;
+int ch_width_1, ch_width_2, ch_width_3, ch_width_4, ch_width_5, ch_width_6;
 Servo ch1, ch2, ch3, ch4, ch5, ch6;
 int throttle, pitch, roll, yaw, rotateL, rotateR;
 bool switchL, switchR;
@@ -15,7 +15,12 @@ const uint64_t pipeIn = 0xE9E8F0F0E1LL;
 RF24 radio(7, 8); 
 
 void ResetData() {
-    ch_width_1, ch_width_2, ch_width_3, ch_width_4, ch_width_5, ch_width_6 = 1500;
+    ch_width_1 = 1500;
+    ch_width_2 = 2000;
+    ch_width_3 = 2000;
+    ch_width_4 = 2500;
+    ch_width_5 = 1500;
+    ch_width_6 = 1000;
     throttle, pitch, roll, yaw, rotateL, rotateR = 127;
     switchL, switchR = false;
 }
@@ -62,11 +67,19 @@ void recvData() {
     }
 }
 
-int limit(int value, int min, int max) {
+float limit(int value, int min, int max) {
     if ( value < min ) {
         return min;
     } else if ( value > max ) {
         return max;
+    } else {
+        return value;
+    }
+}
+
+float deadzone(int value, int deadzone) {
+    if ( value == deadzone ) {
+        return 0;
     } else {
         return value;
     }
@@ -79,12 +92,12 @@ void loop() {
         Serial.println("Lost connection");
     }
 
-    ch_width_1 = limit(map(throttle, 0, 255, -10, 10) + ch_width_1, 1000, 2000);
-    ch_width_2 = limit(map(pitch, 0, 255, -10, 10) + ch_width_2, 1000, 2000);
-    ch_width_3 = limit(map(roll, 0, 255, -10, 10) + ch_width_3, 1000, 2000);
-    ch_width_4 = limit(map(yaw, 0, 255, -10, 10) + ch_width_4, 1000, 2000);
-    ch_width_5 = map(rotateL, 0, 255, 1000, 2000);
-    ch_width_6 = map(rotateR, 0, 255, 1000, 2000);
+    ch_width_1 = limit(map(deadzone(throttle, 127), 0, 255, -10, 10) + ch_width_1, 500, 2500);
+    ch_width_2 = limit(map(deadzone(roll, 127), 0, 255, 10, -10) + ch_width_2, 500, 2500);
+    ch_width_3 = limit(map(deadzone(pitch, 127), 0, 255, -10, 10) + ch_width_3, 500, 2000);
+    ch_width_4 = limit(map(deadzone(yaw, 127), 0, 255, 10, -10) + ch_width_4, 500, 2500);
+    ch_width_5 = map(rotateL, 0, 255, 500, 2500);
+    ch_width_6 = map(rotateR, 0, 255, 1000, 2300);
 
     ch1.writeMicroseconds(ch_width_1);
     ch2.writeMicroseconds(ch_width_2);
@@ -104,7 +117,24 @@ void loop() {
     Serial.print(" ch5:");
     Serial.print(ch_width_5);
     Serial.print(" ch6:");
-    Serial.println(ch_width_6);
+    Serial.print(ch_width_6);
+
+    Serial.print(" throttle:");
+    Serial.print(throttle);
+    Serial.print(" pitch:");
+    Serial.print(pitch);
+    Serial.print(" roll:");
+    Serial.print(roll);
+    Serial.print(" yaw:");
+    Serial.print(yaw);
+    Serial.print(" rotateL:");
+    Serial.print(rotateL);
+    Serial.print(" rotateR:");
+    Serial.print(rotateR);
+    Serial.print(" switchL:");
+    Serial.print(switchL);
+    Serial.print(" switchR:");
+    Serial.println(switchR);
 
     digitalWrite(14, switchL);
     digitalWrite(15, switchR);
