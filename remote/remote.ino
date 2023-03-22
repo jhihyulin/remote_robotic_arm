@@ -79,10 +79,10 @@ void loop() {
         Serial.println("Lost connection");
     }
 
-    ch_width_1 = limit(map(throttle, 0, 255, -1, 1) + ch_width_1, 1000, 2000);
-    ch_width_2 = limit(map(pitch, 0, 255, -1, 1) + ch_width_2, 1000, 2000);
-    ch_width_3 = limit(map(roll, 0, 255, -1, 1) + ch_width_3, 1000, 2000);
-    ch_width_4 = limit(map(yaw, 0, 255, -1, 1) + ch_width_4, 1000, 2000);
+    ch_width_1 = limit(map(throttle, 0, 255, -10, 10) + ch_width_1, 1000, 2000);
+    ch_width_2 = limit(map(pitch, 0, 255, -10, 10) + ch_width_2, 1000, 2000);
+    ch_width_3 = limit(map(roll, 0, 255, -10, 10) + ch_width_3, 1000, 2000);
+    ch_width_4 = limit(map(yaw, 0, 255, -10, 10) + ch_width_4, 1000, 2000);
     ch_width_5 = map(rotateL, 0, 255, 1000, 2000);
     ch_width_6 = map(rotateR, 0, 255, 1000, 2000);
 
@@ -92,6 +92,19 @@ void loop() {
     ch4.writeMicroseconds(ch_width_4);
     ch5.writeMicroseconds(ch_width_5);
     ch6.writeMicroseconds(ch_width_6);
+
+    Serial.print("ch1:");
+    Serial.print(ch_width_1);
+    Serial.print(" ch2:");
+    Serial.print(ch_width_2);
+    Serial.print(" ch3:");
+    Serial.print(ch_width_3);
+    Serial.print(" ch4:");
+    Serial.print(ch_width_4);
+    Serial.print(" ch5:");
+    Serial.print(ch_width_5);
+    Serial.print(" ch6:");
+    Serial.println(ch_width_6);
 
     digitalWrite(14, switchL);
     digitalWrite(15, switchR);
