@@ -25,7 +25,7 @@ A simple remote-controlled robotic arm controlled by a joystick and servo motors
 ### Controller
 ![](/control/control.svg)
 
-### receiver
+### Receiver
 ![](/remote/remote.svg)
 
 ## Credits
