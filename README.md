@@ -20,5 +20,13 @@ A simple remote-controlled robotic arm controlled by a joystick and servo motors
 | wires | | |
 | pin headers | | |
 
+## Circuit
+
+### Controller
+![](/control/control.svg)
+
+### receiver
+![](/remote/remote.svg)
+
 ## Credits
 > [Simple and Cheap Radio Control Making for RC Models. DIY RC](https://www.rcpano.net/2020/02/17/simple-and-cheap-radio-control-making-for-rc-models-diy-rc)
