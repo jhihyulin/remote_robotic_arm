@@ -1,6 +1,6 @@
 # remote_robotic_arm
 
-A simple remote-controlled robotic arm controlled by a joystick and servo motors.
+A simple remote-controlle robotic arm controlled by a joystick and servo motors.
 
 ## BOM
 
