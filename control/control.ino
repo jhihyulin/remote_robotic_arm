@@ -25,22 +25,22 @@ void setup() {
     Serial.begin(115200);
 }
 
-int mapJoystickValues(int val, int lower, int middle, int upper, bool reverse) {
+int mapJoystickValues(int val, int lower, int middle, int upper) {
     val = constrain(val, lower, upper);
     if ( val < middle )
     val = map(val, lower, middle, 0, 128);
     else
     val = map(val, middle, upper, 128, 255);
-    return ( reverse ? 255 - val : val );
+    return 255 - val;
 }
 
 void loop() {
-    throttle = mapJoystickValues( analogRead(A0), 524, 524, 1015, true );
-    roll = mapJoystickValues( analogRead(A1), 12, 524, 1020, true );
-    pitch = mapJoystickValues( analogRead(A2), 12, 524, 1020, true );
-    yaw = mapJoystickValues( analogRead(A3), 12, 524, 1020, true );
-    rotateL = mapJoystickValues( analogRead(A4), 12, 524, 1020, true );
-    rotateR = mapJoystickValues( analogRead(A5), 12, 524, 1020, true );
+    throttle = mapJoystickValues( analogRead(A0), 524, 524, 1015);
+    roll = mapJoystickValues( analogRead(A1), 12, 524, 1020);
+    pitch = mapJoystickValues( analogRead(A2), 12, 524, 1020);
+    yaw = mapJoystickValues( analogRead(A3), 12, 524, 1020);
+    rotateL = mapJoystickValues( analogRead(A4), 12, 524, 1020);
+    rotateR = mapJoystickValues( analogRead(A5), 12, 524, 1020);
     switchL = !digitalRead(2);
     switchR = !digitalRead(3);
 
