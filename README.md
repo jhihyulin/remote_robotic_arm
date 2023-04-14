@@ -1,6 +1,6 @@
 # remote_robotic_arm
 
-A simple remote-controlle robotic arm controlled by a joystick and servo motors.
+A simple remote-control robotic arm controlled by two joysticks and servo motors.
 
 ## BOM
 
@@ -17,9 +17,9 @@ A simple remote-controlle robotic arm controlled by a joystick and servo motors.
 | Red LED | 1 | optional |
 | 220Ω Resistor | 1 | optional with LED |
 | Buzzer | 1 | optional |
-| popsicle stick | | or any other strong material |
-| wires | | |
-| pin headers | | |
+| Popsicle Stick | | or any other strong material |
+| Wires | | |
+| Pin Headers | | |
 
 ## Circuit
 
