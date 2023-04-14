@@ -49,7 +49,6 @@ unsigned long lastRecvTime = 0;
 
 void recvData() {
     while ( radio.available() ) {
-        // radio.read(&data, sizeof(Signal));
         int data[8];
         radio.read(&data, sizeof(data));
         Serial.print(data[0]);
